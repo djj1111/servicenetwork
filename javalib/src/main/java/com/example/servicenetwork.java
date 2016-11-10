@@ -52,7 +52,7 @@ public class servicenetwork {
         System.out.println("file.encoding=" + System.getProperty("file.encoding"));
         System.out.println("Default Charset=" + Charset.defaultCharset());
         System.out.println("Default Charset in Use=" + getDefaultCharSet());
-        String t = "姝ｅ湪鎺ユ敹鏁版嵁...";
+        String t = "测试字体...";
         System.out.println(t);
         String utf8 = new String(t.getBytes("UTF-8"));
         System.out.println(utf8);
