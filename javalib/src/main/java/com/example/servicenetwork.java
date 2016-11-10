@@ -50,7 +50,6 @@ public class servicenetwork {
     public static void main(String[] args) throws IOException {
         System.out.println("Default Charset=" + Charset.defaultCharset());
         System.out.println("file.encoding=" + System.getProperty("file.encoding"));
-        System.out.println("Default Charset=" + Charset.defaultCharset());
         System.out.println("Default Charset in Use=" + getDefaultCharSet());
         String t = "测试字符...";
         System.out.println(t);
