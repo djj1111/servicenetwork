@@ -75,25 +75,32 @@ public class DBHelper {
         }
     }
 
-    public void readdatabase() {
+    public void readdatabase(String path) {
         try {
-            stmt = conn.prepareStatement("select photo from tmp where id=8");
+            stmt = conn.prepareStatement("select photo from tmp");
             //stmt.setInt(1,3);
             rs = stmt.executeQuery();
-            rs.first();
-            Blob bb = rs.getBlob(1);
-            DataInputStream inputStream = new DataInputStream(bb.getBinaryStream());
-            File file = new File("d:\\tttttt5.jpg");
-            FileOutputStream fout = new FileOutputStream(file);
-            byte[] b = new byte[2048];
-            int length;
-            while ((length = inputStream.read(b, 0, b.length)) > 0) {
-                System.out.println("收到照片，长度为" + length);
-                fout.write(b, 0, length);
-                fout.flush();
+            int i = 0;
+            File file = new File(path);
+            if (!file.exists()) file.mkdir();
+            while (!rs.isLast()) {
+                i++;
+                rs.next();
+                Blob bb = rs.getBlob(1);
+                DataInputStream inputStream = new DataInputStream(bb.getBinaryStream());
+                file = new File(path + "\\" + i + ".jpg");
+                FileOutputStream fout = new FileOutputStream(file);
+                byte[] b = new byte[2048];
+                int length;
+                while ((length = inputStream.read(b, 0, b.length)) > 0) {
+                    System.out.println("收到照片，长度为" + length);
+                    fout.write(b, 0, length);
+                    fout.flush();
+                }
+                fout.close();
+                inputStream.close();
             }
-            fout.close();
-            inputStream.close();
+
 
         } catch (Exception e) {
             e.printStackTrace();

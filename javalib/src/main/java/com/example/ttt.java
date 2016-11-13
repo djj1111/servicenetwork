@@ -23,7 +23,7 @@ public class ttt {
         System.out.println("Default Charset in Use=" + getDefaultCharSet());
 
         DBHelper dbHelper = new DBHelper();
-        dbHelper.readdatabase();
+        dbHelper.readdatabase("d:\\fuck");
         dbHelper.close();
     }
 }
