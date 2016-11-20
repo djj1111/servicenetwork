@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Created by djj on 2016/11/9.
@@ -73,7 +74,7 @@ public class servicenetwork {
                 boolean stop = false;
                 while (!stop) {
                     String com = sc.nextLine();
-                    if (com.equals("exit")) {
+                    if (com.equalsIgnoreCase("exit")) {
                         fixedThreadPool.shutdown();
                         close = true;
                         try {
@@ -114,7 +115,10 @@ public class servicenetwork {
 
         //ResultSet rs;
         while (!close) {
-            fixedThreadPool.execute(new SocketThread(server.accept()));
+            try {
+                fixedThreadPool.execute(new SocketThread(server.accept()));
+            } catch (RejectedExecutionException e) {
+            }
         }
 
 

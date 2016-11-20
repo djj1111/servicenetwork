@@ -27,6 +27,14 @@ public class DBHelper {
     public DBHelper() {
         try {
             Class.forName(name);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void connect() {
+        try {
             conn = DriverManager.getConnection(url, user, password);//建立数据库连接
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,6 +117,7 @@ public class DBHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        close();
         //return rs;
     }
 

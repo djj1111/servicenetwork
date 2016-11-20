@@ -109,13 +109,13 @@ public class SocketThread extends Thread {
     private int updatedb() {
         int r = -1;
         try {
+            dbHelper.connect();
             if ((r = dbHelper.writedatabase(socket.getInetAddress().toString(), text, photo)) > 0) {
                 out.writeInt(UPDATESUCCESS);
-
-
             } else {
                 out.writeInt(UPDATEFAULT);
             }
+            dbHelper.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
