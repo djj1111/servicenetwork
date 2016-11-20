@@ -1,14 +1,11 @@
 package com.example;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by djj on 2016/11/9.
@@ -16,15 +13,16 @@ import java.util.Scanner;
 
 public class servicenetwork {
     static final int PORT = 12797, MAXSOCKET = 100;
-    static ServerSocket server;
-    static DBHelper dbHelper;
-    static Socket socket;
-    static Thread mainthread;
-    static LinkedList<SocketThread> socketpool;
+    static boolean close = false;
+    //static ServerSocket server;
+    //static DBHelper dbHelper;
+    //static Socket socket;
 
-    public static void close() {
+    //static LinkedList<SocketThread> socketpool;
+
+    /*public static void close() {
         try {
-            for (SocketThread i : socketpool)
+           *//* for (SocketThread i : socketpool)
                 i.finish();
 
             //socket.close();
@@ -33,23 +31,24 @@ public class servicenetwork {
             }
             socket.close();
             dbHelper.close();
-            server.close();
+            server.close();*//*
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         mainthread.interrupt();
         System.exit(1);
-    }
+    }*/
 
-    private static String getDefaultCharSet() {
+   /* private static String getDefaultCharSet() {
         OutputStreamWriter writer = new OutputStreamWriter(new ByteArrayOutputStream());
         String enc = writer.getEncoding();
         return enc;
-    }
+    }*/
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Default Charset=" + Charset.defaultCharset());
+        /*System.out.println("Default Charset=" + Charset.defaultCharset());
         System.out.println("file.encoding=" + System.getProperty("file.encoding"));
         System.out.println("Default Charset in Use=" + getDefaultCharSet());
         String t = "测试字符...";
@@ -60,24 +59,38 @@ public class servicenetwork {
         System.out.println(unicode);
         String gbk = new String(unicode.getBytes("GBK"));
 
-        System.out.println(gbk);
-        mainthread = Thread.currentThread();
-        socketpool = new LinkedList<SocketThread>();
-        server = new ServerSocket(PORT);
+        System.out.println(gbk);*/
+        //Thread mainthread;
+        //mainthread = Thread.currentThread();
+        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(MAXSOCKET);
+        //socketpool = new LinkedList<SocketThread>();
+        ServerSocket server = new ServerSocket(PORT);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Scanner sc = new Scanner(System.in);
-                while (true) {
+                boolean stop = false;
+                while (!stop) {
                     String com = sc.nextLine();
                     if (com.equals("exit")) {
+                        fixedThreadPool.shutdown();
+                        close = true;
+                        try {
+                            Socket socket = new Socket("127.0.0.1", PORT);
+                            socket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         sc.close();
-                        close();
+                        stop = true;
+                        //close();
                     }
                 }
             }
         }).start();
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -94,22 +107,14 @@ public class servicenetwork {
                     }
                 }
             }
-        }).start();
-        dbHelper = new DBHelper();
-        SocketThread tmpthread;
+        }).start();*/
+
+
+        //SocketThread tmpthread;
 
         //ResultSet rs;
-        while (true) {
-            socket = server.accept();
-            if (socketpool.size() < MAXSOCKET) {
-                tmpthread = new SocketThread(socket, dbHelper);
-                tmpthread.start();
-                socketpool.add(tmpthread);
-
-            } else {
-                socket.close();
-            }
-
+        while (!close) {
+            fixedThreadPool.execute(new SocketThread(server.accept()));
         }
 
 
