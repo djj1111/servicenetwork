@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -26,7 +27,7 @@ public class servicenetwork {
             for (SocketThread i : socketpool)
                 i.finish();
 
-            socket.close();
+            //socket.close();
             if (socket == null) {
                 socket = new Socket("127.0.0.1", PORT);
             }
@@ -80,12 +81,13 @@ public class servicenetwork {
             @Override
             public void run() {
                 while (true) {
-                    for (SocketThread i : socketpool) {
-                        if (i.getfinished()) socketpool.remove(i);
+                    Iterator iterator = socketpool.iterator();
+                    while (iterator.hasNext()) {
+                        SocketThread socketThread = (SocketThread) iterator.next();
+                        if (socketThread.getfinished()) iterator.remove();
                     }
                     try {
                         Thread.sleep(2000);
-                        ;
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
