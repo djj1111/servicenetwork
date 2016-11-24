@@ -42,6 +42,7 @@ public class DBHelper {
         }
     }
 
+
     /*public  void testblob(){
         int j;
         try {byte[] buffer1=new byte[10];
