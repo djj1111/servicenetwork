@@ -25,6 +25,7 @@ public class DBHelper {
     public Connection conn = null;
 
     public DBHelper() {
+        //com.mysql.jdbc.Driver b;
         try {
             Class.forName(name);
         } catch (ClassNotFoundException e) {
