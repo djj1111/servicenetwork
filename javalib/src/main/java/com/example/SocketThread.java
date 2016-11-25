@@ -25,9 +25,15 @@ public class SocketThread extends Thread {
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     //private ByteArrayInputStream photoin;
 
-    public SocketThread(Socket socket, DBHelper dbHelper) {
+    public SocketThread(Socket socket) {
         this.socket = socket;
-        this.dbHelper = dbHelper;
+    }
+
+    @Override
+    public void run() {
+        super.run();
+        int field;
+        this.dbHelper = new DBHelper();
         try {
             in = new DataInputStream(this.socket.getInputStream());
             out = new DataOutputStream(this.socket.getOutputStream());
@@ -39,12 +45,6 @@ public class SocketThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void run() {
-        super.run();
-        int field;
 
         while (!isfinished) {
             try {
@@ -109,13 +109,13 @@ public class SocketThread extends Thread {
     private int updatedb() {
         int r = -1;
         try {
+            dbHelper.connect();
             if ((r = dbHelper.writedatabase(socket.getInetAddress().toString(), text, photo)) > 0) {
                 out.writeInt(UPDATESUCCESS);
-
-
             } else {
                 out.writeInt(UPDATEFAULT);
             }
+            dbHelper.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
