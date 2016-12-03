@@ -13,7 +13,7 @@ import java.util.concurrent.RejectedExecutionException;
  */
 
 public class servicenetwork {
-    static final int PORT = 12797, MAXSOCKET = 100;
+    static final int PORT = 12702, MAXSOCKET = 100;
     static boolean close = false;
     //static ServerSocket server;
     //static DBHelper dbHelper;
