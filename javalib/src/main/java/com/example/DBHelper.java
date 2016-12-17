@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 
 public class DBHelper {
-    private static final String url = "jdbc:mysql://10.0.0.9:9701/test?url?socketTimeout=2000&socketTimeout=3000";
+    private static final String url = "jdbc:mysql://10.0.0.9:9701/test?connectTimeout=2000&socketTimeout=3000";
     private static final String name = "com.mysql.jdbc.Driver";
     private static final String user = "user";
     private static final String password = "1111";

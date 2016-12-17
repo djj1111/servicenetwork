@@ -94,6 +94,7 @@ public class SocketThread extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
                 finish("error");
+                break;
             }
         }
         text = null;
