@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class SocketThread extends Thread {
     private static final int FTEXT = -11, FPHOTO = -12, FUPDATE = -13, FFINISHED = -14,
-            UPDATESUCCESS = -21, UPDATEFAULT = -22, NETWORKSTART = -41;
+            UPDATESUCCESS = -21, UPDATEFAULT = -22, DATEBASEERROR = -23, NETWORKSTART = -41;
     private DBHelper dbHelper;
     private Socket socket;
     private boolean isfinished = false;
@@ -35,6 +35,7 @@ public class SocketThread extends Thread {
         int field;
         this.dbHelper = new DBHelper();
         try {
+            socket.setSoTimeout(10000);
             in = new DataInputStream(this.socket.getInputStream());
             out = new DataOutputStream(this.socket.getOutputStream());
             String s = "正在接收数据...";
@@ -84,7 +85,7 @@ public class SocketThread extends Thread {
                             System.out.println(df.format(new Date()) + ":" + "数据库更新成功");
                         break;
                     case FFINISHED:
-                        finish();
+                        finish("success finished");
                         break;
                     default:
                         break;
@@ -92,6 +93,7 @@ public class SocketThread extends Thread {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                finish("error");
             }
         }
         text = null;
@@ -109,26 +111,28 @@ public class SocketThread extends Thread {
     private int updatedb() {
         int r = -1;
         try {
-            dbHelper.connect();
-            if ((r = dbHelper.writedatabase(socket.getInetAddress().toString(), text, photo)) > 0) {
-                out.writeInt(UPDATESUCCESS);
+            if (dbHelper.connect()) {
+                if ((r = dbHelper.writedatabase(socket.getInetAddress().toString(), text, photo)) > 0) {
+                    out.writeInt(UPDATESUCCESS);
+                } else {
+                    out.writeInt(UPDATEFAULT);
+                }
+                dbHelper.close();
             } else {
-                out.writeInt(UPDATEFAULT);
+                out.writeInt(DATEBASEERROR);
             }
-            dbHelper.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         text = null;
         photo = null;
         return r;
     }
 
-    public void finish() {
+    public void finish(String s) {
 
         isfinished = true;
-        System.out.println(df.format(new Date()) + ":" + this.getName() + ":finished!");
+        System.out.println(df.format(new Date()) + ":" + this.getName() + ":" + s);
     }
 
     public boolean getfinished() {
