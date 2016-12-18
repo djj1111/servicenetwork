@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 
 public class DBHelper {
-    private static final String url = "jdbc:mysql://10.0.0.9:9701/test?useSSL=true&verifyServerCertificate=false&connectTimeout=2000&socketTimeout=3000";
+    private static final String url = "jdbc:mysql://10.0.0.9:9701/test?useSSL=true&verifyServerCertificate=false&connectTimeout=2000&socketTimeout=3000&autoReconnect=true&failOverReadOnly=false&maxReconnects=3";
     private static final String name = "com.mysql.jdbc.Driver";
     private static final String user = "user";
     private static final String password = "1111";
@@ -30,6 +30,7 @@ public class DBHelper {
             Class.forName(name);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            System.out.println("database connect error!");
         }
 
     }
@@ -44,6 +45,27 @@ public class DBHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void test() {
+        connect();
+        try {
+            PreparedStatement stmt1 = conn.prepareStatement("select id from tmp where id=1");
+            ResultSet rs1 = stmt1.executeQuery();
+            rs1.first();
+            if (rs1.getInt(1) == 1) {
+                close();
+                rs1.close();
+                stmt1.close();
+                System.out.println("Maintain database connection success");
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        close();
+        System.out.println("Maintain database connection failed");
+        return;
     }
 
 

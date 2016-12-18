@@ -75,8 +75,7 @@ public class servicenetwork {
             public void run() {
                 DBHelper dbHelper = new DBHelper();
                 while (!close) {
-                    dbHelper.connect();
-                    dbHelper.close();
+                    dbHelper.test();
                     try {
                         Thread.sleep(4 * 60 * 60 * 1000);
                     } catch (InterruptedException e) {
