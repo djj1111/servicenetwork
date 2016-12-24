@@ -13,7 +13,7 @@ import java.util.concurrent.RejectedExecutionException;
  */
 
 public class servicenetwork {
-    static final int PORT = 12702, MAXSOCKET = 100;
+    static final int PORT = 12702, MAXSOCKET = 20;
     static boolean close = false;
 
     //static ServerSocket server;
@@ -70,7 +70,7 @@ public class servicenetwork {
         /*
         * 保持MYSQL定期连接，防止休眠。
         * */
-        Thread dbconnect_thread = new Thread(new Runnable() {
+        /*Thread dbconnect_thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 DBHelper dbHelper = new DBHelper();
@@ -85,7 +85,7 @@ public class servicenetwork {
                 dbHelper = null;
             }
         });
-        dbconnect_thread.start();
+        dbconnect_thread.start();*/
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -96,7 +96,7 @@ public class servicenetwork {
                     if (com.equalsIgnoreCase("exit")) {
                         fixedThreadPool.shutdown();
                         close = true;
-                        dbconnect_thread.interrupt();
+                        //dbconnect_thread.interrupt();
                         try {
                             Socket socket = new Socket("127.0.0.1", PORT);
                             socket.close();

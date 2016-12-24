@@ -47,7 +47,7 @@ public class DBHelper {
         }
     }
 
-    public void test() {
+    /*public void test() {
         connect();
         try {
             PreparedStatement stmt1 = conn.prepareStatement("select id from tmp where id=1");
@@ -66,7 +66,7 @@ public class DBHelper {
         close();
         System.out.println("Maintain database connection failed");
         return;
-    }
+    }*/
 
 
     /*public  void testblob(){
